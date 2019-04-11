@@ -56,35 +56,94 @@ public class SegreteriaStudentiController {
 
     @FXML
     void doCercaCorsi(ActionEvent event) {
-
+    	output.clear();
+    	String testo = "";
+    	int nummatr = Integer.parseInt(matricola.getText());
+    	List<Corso> corsi = model.getCorsiStudente(nummatr);
+    	for(Corso c : corsi)
+    		testo += c.toString()+"\n";
+    	if(testo.equals(""))
+        	output.setText("Studente momentaneamente non iscritto ad alcun corso!");
+    	else
+        	output.setText(testo);
     }
 
     @FXML
     void doCercaIscritti(ActionEvent event) {
+    	output.clear();
+    	nome.clear();
+    	cognome.clear();
+    	
     	Corso c = corsi.getValue();
-    	String testo="";
-    	List<Studente> iscritti = c.getStudenti();
-    	for(Studente s : iscritti)
-    		testo += s.toString()+"\n";
-    	output.setText(testo);
+    	if(c==null) {
+        	output.setText("Selezionare un corso!");
+        	return;
+    	}
+    	List<Studente> iscritti = model.getIscrittiCorso(c);
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	for(Studente s : iscritti) {
+    		sb.append(String.format("%-10s", s.getMatricola()));
+    		sb.append(String.format("%-20s", s.getCognome()));
+    		sb.append(String.format("%-20s", s.getNome()));
+    		sb.append(String.format("%-10s", s.getCds()));
+    		sb.append("\n");
+    	}
+    	if(sb.equals(""))
+        	output.setText("Corso momentaneamente senza iscritti!");
+    	else
+        	output.appendText(sb.toString());
     }
 
     @FXML
     void doIscrivi(ActionEvent event) {
-
+    	output.clear();
+    	Corso c = corsi.getValue();
+    	Studente s = this.doTrovaMatricola(event);
+    	if(c == null)
+    		output.setText("Nessun corso selezionato!");
+    	if( c != null && s != null) {
+    		model.iscriviStudente(c, s);
+    		output.setText("Studente iscritto al corso!");
+    	}
     }
 
     @FXML
     void doReset(ActionEvent event) {
-
+    	matricola.clear();
+    	nome.clear();
+    	cognome.clear();
+    	output.clear();
+    	corsi.getSelectionModel().clearSelection();
     }
 
     @FXML
-    void doTrovaMatricola(ActionEvent event) {
-    	int nummatr = Integer.parseInt(matricola.getText());
-    	Studente s = model.getStudente(nummatr);
-    	nome.setText(s.getNome());
-    	cognome.setText(s.getCognome());
+    Studente doTrovaMatricola(ActionEvent event) {
+    	output.clear();
+    	nome.clear();
+    	cognome.clear();
+    	boolean numeric = true;
+    	Studente s = null;
+    	try {
+        	int nummatr = Integer.parseInt(matricola.getText());
+    	}
+    	catch(NumberFormatException e) {
+    		numeric = false;
+    	}
+    	if(numeric==false)
+    		output.setText("Caratteri non permessi nel campo matricola!");
+    	else {
+	    	int nummatr = Integer.parseInt(matricola.getText());
+	    	s = model.getStudente(nummatr);
+	    	if(s==null)
+	    		output.setText("Studente non presente!");
+	    	else {
+	    		nome.setText(s.getNome());
+	        	cognome.setText(s.getCognome());
+	    	}
+    	}
+    	return s;
     }
 
     @FXML
@@ -99,7 +158,8 @@ public class SegreteriaStudentiController {
         assert iscrivi != null : "fx:id=\"iscrivi\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
         assert reset != null : "fx:id=\"reset\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
         assert output != null : "fx:id=\"output\" was not injected: check your FXML file 'SegreteriaStudenti.fxml'.";
-
+        
+        output.setStyle("-fx-font-family: monospace");
     }
     
     public void setModel(Model model) {

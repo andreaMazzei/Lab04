@@ -22,8 +22,17 @@ public class Model {
 	
 	public List<Studente> getIscrittiCorso(Corso c) {
 		IscrizioneDAO dao = new IscrizioneDAO();
-		return null;//DA FINIRE
-		
+		return dao.getAllIscrizioni(c.getCodins());
 	}
 
+	public List<Corso> getCorsiStudente(int matricola) {
+		CorsoDAO dao = new CorsoDAO();
+		return dao.getCorsiStudente(matricola);
+	}
+
+	public void iscriviStudente(Corso c, Studente s) {
+		IscrizioneDAO dao = new IscrizioneDAO();
+		dao.iscriviStudente(c, s);
+	}
+	
 }

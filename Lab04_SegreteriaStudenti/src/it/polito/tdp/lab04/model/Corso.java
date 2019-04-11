@@ -9,7 +9,6 @@ public class Corso {
 	private int crediti;
 	private String nome;
 	private int pd;
-	private List<Studente> studentiIscritti = new ArrayList<Studente>();
 	
 	public Corso(String codins, int crediti, String nome, int pd) {
 		super();
@@ -46,7 +45,7 @@ public class Corso {
 
 	@Override
 	public String toString() {
-		return "Corso [codins=" + codins + ", crediti=" + crediti + ", nome=" + nome + ", pd=" + pd + "]";
+		return codins +" "+ crediti +" "+ nome +" "+ pd;
 	}
 
 	@Override
@@ -73,18 +72,4 @@ public class Corso {
 			return false;
 		return true;
 	}
-	
-	public void addStudente(Studente s) {
-		for(Studente stud : studentiIscritti) {
-			if(stud.equals(s))
-				return;
-			else
-				studentiIscritti.add(s);
-		}
-	}
-
-	public List<Studente> getStudenti() {
-		return studentiIscritti;
-	}
-
 }

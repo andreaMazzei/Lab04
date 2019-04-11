@@ -26,6 +26,5 @@ public class Iscrizione {
 	public void setCodins(String codins) {
 		this.codins = codins;
 	}
-	
-	
+		
 }

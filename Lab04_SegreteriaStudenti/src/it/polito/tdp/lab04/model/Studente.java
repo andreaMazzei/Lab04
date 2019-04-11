@@ -79,8 +79,6 @@ public class Studente {
 		this.iscrizioni = iscrizioni;
 	}
 
-
-
 	public void addCorso(Corso c) {
 		for(Corso cor : iscrizioni) {
 			if(cor.equals(c))
@@ -89,5 +87,12 @@ public class Studente {
 				iscrizioni.add(c);
 		}
 	}
+
+
+	@Override
+	public String toString() {
+		return matricola + " " + cognome + " " + nome + " " + cds;
+	}
+	
 	 
 }

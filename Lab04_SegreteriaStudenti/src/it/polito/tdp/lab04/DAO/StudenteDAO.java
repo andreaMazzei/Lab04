@@ -12,21 +12,22 @@ import it.polito.tdp.lab04.model.Studente;
 
 public class StudenteDAO {
 	
-	public List<Studente> getAllStudenti() {
+	public Studente getStudente(int matricola) {
 
-		final String sql = "SELECT * FROM studente";
+		final String sql = "SELECT * FROM studente WHERE matricola =?";
 
-		List<Studente> studenti = new LinkedList<Studente>();
+		Studente studente = null;
 
 		try {
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
+			
+			st.setInt(1, matricola);
 
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
 
-				int matricola = rs.getInt("matricola");
 				String cognome = rs.getString("cognome");
 				String nome = rs.getString("nome");
 				String cds = rs.getString("cds");
@@ -34,24 +35,16 @@ public class StudenteDAO {
 
 				System.out.println(matricola + " " + cognome + " " + nome + " " + cds);
 
-				Studente s = new Studente(matricola, cognome, nome, cds);
-				studenti.add(s);
+				studente = new Studente(matricola, cognome, nome, cds);
 			}
 
-			return studenti;
+			//conn.close();
 
 		} catch (SQLException e) {
 			// e.printStackTrace();
 			throw new RuntimeException("Errore Db");
 		}
+		
+		return studente;
 	}
-	
-	public Studente getStudente(int matricola) {
-		for(Studente s : this.getAllStudenti()) {
-			if(s.getMatricola()==matricola)
-				return s;
-		}
-		return null;
-	}
-
 }

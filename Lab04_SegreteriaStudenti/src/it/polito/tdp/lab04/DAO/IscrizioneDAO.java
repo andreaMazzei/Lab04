@@ -7,41 +7,71 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import it.polito.tdp.lab04.model.Corso;
 import it.polito.tdp.lab04.model.Iscrizione;
 import it.polito.tdp.lab04.model.Studente;
 
 public class IscrizioneDAO {
-	public List<Iscrizione> getAllIscrizioni(String codins) {
+	public List<Studente> getAllIscrizioni(String codins) {
 		
-		final String sql = "SELECT * FROM studente WHERE matricola IN (SELECT matricola FROM iscrzione WHERE codins = ?)";
+		final String sql = "SELECT * FROM studente WHERE matricola IN (SELECT matricola FROM iscrizione WHERE codins = ?)";
 
-		List<Iscrizione> iscrizioni = new LinkedList<Iscrizione>();
+		List<Studente> studentiIscrittiCorso = new LinkedList<Studente>();
 
 		try {
 			Connection conn = ConnectDB.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
 			
-			st.setString(1, codins);
+			st.setString(1, codins); //DEVO METTERE AL POSTO DEI ? QUELLO CHE VOGLIO SCRIVERE
+									 // PARTO DA 1
 
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-
+				
 				int matricola = rs.getInt("matricola");
-				//String codins = rs.getString("codins");		
+				String cognome = rs.getString("cognome");
+				String nome = rs.getString("nome");
+				String cds = rs.getString("cds");
+				
 
-				System.out.println(matricola + " " + codins);
+				System.out.println(matricola + " " + cognome + " " + nome + " " + cds);
 
-				Iscrizione i = new Iscrizione(matricola, codins);
-				iscrizioni.add(i);
+				Studente s = new Studente(matricola, cognome, nome, cds);
+				studentiIscrittiCorso.add(s);
 			}
-
-			return iscrizioni;
+			
+			//conn.close();
 
 		} catch (SQLException e) {
 			// e.printStackTrace();
 			throw new RuntimeException("Errore Db");
 		}
+		return studentiIscrittiCorso;
+
 	}
-	
+
+	public void iscriviStudente(Corso c, Studente s) {
+		
+		final String sql = "INSERT IGNORE INTO `iscritticorsi`.`iscrizione` (`matricola`, `codins`) VALUES(?,?)";
+		
+						// ATTENZIONE A QUANDO INSERICI ELEMENTI NEL DB A USARE `` E NON '' !!!!!!
+		
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			
+			st.setInt(1, s.getMatricola());
+			st.setString(2, c.getCodins());
+
+			int rs = st.executeUpdate();
+
+			//conn.close();
+			
+		} catch (SQLException e) {
+			// e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+		}
+		
+	}
 }
