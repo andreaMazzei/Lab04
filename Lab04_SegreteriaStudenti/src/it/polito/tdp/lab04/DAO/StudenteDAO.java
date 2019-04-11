@@ -37,7 +37,6 @@ public class StudenteDAO {
 
 				studente = new Studente(matricola, cognome, nome, cds);
 			}
-
 			//conn.close();
 
 		} catch (SQLException e) {
