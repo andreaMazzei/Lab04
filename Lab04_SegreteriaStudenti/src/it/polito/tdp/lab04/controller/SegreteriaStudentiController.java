@@ -90,7 +90,7 @@ public class SegreteriaStudentiController {
     		sb.append(String.format("%-10s", s.getCds()));
     		sb.append("\n");
     	}
-    	if(sb.equals(""))
+    	if(sb.toString().equals(""))
         	output.setText("Corso momentaneamente senza iscritti!");
     	else
         	output.appendText(sb.toString());
